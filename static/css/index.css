@@ -155,3 +155,31 @@ body {
 #interpolation-image-wrapper img {
   border-radius: 5px;
 }
+
+/* Sticky sidebar for docs */
+.docs-columns {
+  align-items: flex-start;
+  position: relative;
+  overflow: visible;
+}
+
+.docs-sidebar {
+  position: sticky;
+  top: 1.5rem;
+  height: max-content;
+  z-index: 2;
+}
+
+.docs-sidebar .menu {
+  position: sticky;
+  top: 1.5rem;
+}
+
+/* Emoji list styling */
+.emoji-list {
+  list-style: none;
+  padding-left: 0;
+}
+.emoji-list li {
+  margin-bottom: 0.4rem;
+}
