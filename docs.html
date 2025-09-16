@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="ConcoLLMic: Agentic Concolic Execution - Docs.">
+  <meta name="keywords" content="ConcoLLMic, Docs, Documentation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Docs - ConcoLLMic</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/navbar.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body class="docs-page">
+
+<div id="navbar-container"></div>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns docs-columns">
+      <aside class="column is-3 docs-sidebar">
+        <nav class="menu">
+          <p class="menu-label">Overview</p>
+          <ul class="menu-list">
+            <li><a href="#system">System Diagram</a></li>
+            <li><a href="#demo">Demo</a></li>
+            <li><a href="#reproducing">Reproducing Results</a></li>
+          </ul>
+          <p class="menu-label">User Guide</p>
+          <ul class="menu-list">
+            <li><a href="#installation">Installation</a></li>
+            <li><a href="#quick-start">Quick Start</a></li>
+            <li><a href="#instrumentation">Instrumentation</a></li>
+            <li><a href="#concolic-testing">Concolic Testing</a></li>
+            <li><a href="#replay">Replay</a></li>
+            <li><a href="#statistics">Statistics</a></li>
+            <li><a href="#model">Models</a></li>
+            <li><a href="#docker">Docker</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="column is-9 content">
+        <h1 class="title is-3">Documentation</h1>
+
+        The source code of ConcoLLMic is available on <a href="https://github.com/ConcoLLMic/ConcoLLMic">GitHub</a>. 
+
+        <h2 id="overview" class="title is-4">Overview</h2>
+        <p>
+            ConcoLLMic is a language- and theory-agonistic concolic execution engine, powered by a collection of LLM agents. 
+            ConcoLLMic performs fuss-free concolic testing across environments and languages, including polyglot systems.
+        </p>
+        
+        Main features of ConcoLLMic include:
+        <ul>
+          <li>Source-code-level instrumentation for any language.</li>
+          <li>Flexible representations (natural language, code, SMT) for path constraints.</li>
+          <li>Readable test cases.</li>
+          <li>Minimizes hallucination with real executions, coverage tracking, and tool use.</li>
+        </ul>
+
+        <h2 id="system" class="title is-4">System Diagram</h2>
+        <p>
+          <img src="./static/images/system.png" alt="System diagram of ConcoLLMic">
+        </p>
+
+        <h2 id="demo" class="title is-4">Demo: Floating-point theory in C</h2>
+        <h3 class="title is-5">Phase 1: Instrumentation</h3>
+        <p>Example instrumentation of <code>src/count.c</code> by inserting <code>fprintf</code> at key execution points. Output in <code>stderr</code> allows reconstruction of the dynamic execution path.</p>
+        <p><img src="./static/images/instrument.png" alt="Instrumentation of ConcoLLMic"></p>
+
+        <h3 class="title is-5">Phase 2: Concolic Testing</h3>
+        <p>Compared to verbose formulas used by traditional tools, e.g., </p>
+        <pre><code>start = atof(I[0]) /\ end = atof(I[1]) /\
+start < end /\ cur[0] = start /\ 
+(for all 0 ≤ i < cnt, cur[i] != end) /\ 
+cur[cnt] == end /\ cnt ≤ 20</code></pre>
+        <p>ConcoLLMic summarizes the path constraints concisely and solves for an input:</p>
+        <pre><code>The number of representable FP values in the range must be ≤ 20.</code></pre>
+        <p>The example workflow to generate such a constraint (and a matching input) is shown below, where the Summarization Agent and the Solving Agent work together towards the goal.</p>
+        <p><img src="./static/images/workflow.png" alt="Testing Phase of ConcoLLMic"></p>
+
+        <h2 id="reproducing" class="title is-4">Reproducing Results from Paper</h2>
+        <p>For running example real-world projects, see <a href="https://github.com/ConcoLLMic/ConcoLLMic/blob/main/experiments/README.md">instructions</a> on GitHub. 
+
+        <h2 id="setup" class="title is-4">User Guide of ConcoLLMic</h2>
+
+        <h3 id="installation" class="title is-5">Installation</h3>
+        <pre><code>https://github.com/ConcoLLMic/ConcoLLMic.git ConcoLLMic && cd ConcoLLMic
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+
+export ANTHROPIC_API_KEY="YOUR_KEY_HERE"</code></pre>
+        <p>For more details on using different models and setting up API keys, see the <a href="#model">Model</a> section.</p>
+
+        <h3 id="quick-start" class="title is-5">Quick Start</h3>
+        <p>Use the single entrypoint to instrument, run, and replay.</p>
+        <pre><code>python3 ACE.py [subcommand] [options]</code></pre>
+        <ul>
+          <li><code>instrument</code>: instrument the source code</li>
+          <li><code>run</code>: run the concolic testing agent</li>
+          <li><code>replay</code>: replay and examine generated tests</li>
+        </ul>
+
+        <p><strong>Step 1.</strong> Instrument the source code.</p>
+        <p>For the working examples, instrumented code is already provided in <code>./code_example/instr/</code>. If you want to re-instrument them (or your own code), run:</p>
+        <pre><code>python3 ACE.py instrument \
+  --src_dir ./code_example/src/ \
+  --out_dir ./code_example/instr/ \
+  --instr_languages python,java,c,cpp</code></pre>
+
+        <p><strong>Step 2.</strong> Compile the instrumented code.</p>
+        <p>Build the instrumented example to get a runnable binary:</p>
+        <pre><code>gcc -o ./code_example/instr/count ./code_example/instr/count.c</code></pre>
+
+        <p><strong>Step 3.</strong> Launch the concolic execution agent.</p>
+        <p>Run the test harness for 2 rounds with 3 parallel queries. It costs ~$0.40 with Claude-3.7. </p>
+        <pre><code>python3 ACE.py run \
+  --project_dir ./code_example/instr/ \
+  --execution ./code_example/harness/count.py \
+  --out out --rounds 2 --parallel_num 3</code></pre>
+        
+        <p>This will generate logs <code>./out/ConcoLLMic_*.log</code> and test cases in <code>./out/queue/id:*.yaml</code>. 
+           Optionally, view testing statistics (e.g., costs, time) with:</p>
+        <pre><code>python3 ACE.py run_data ./out/</code></pre>
+
+        <p><strong>Step 4.</strong> Replay generated tests for coverage / debugging.</p>
+        <p>First, compile the program with <code>gcov</code> enabled and reset coverage counters:</p>
+        <pre><code>cd ./code_example/src/
+gcc --coverage -o count count.c
+lcov -z -d .
+cd ../../</code></pre>
+        <p>Then, replay the generated tests to collect coverage data using the provided coverage script:</p>
+        <pre><code>python3 ACE.py replay ./out/ ./code_example/src/ ./coverage.csv \
+  --cov_script ./code_example/src/coverage.sh</code></pre>
+
+        <p>This will generate a summary at <code>coverage.csv</code> and the detailed coverage at <code>./code_example/src/count.c.gcov</code>. The <code>gcov</code> file would indicate that the bug at line 67 has been successfully triggered.</p>
+
+        <h3 id="instrumentation" class="title is-5">Instrumentation</h3>
+        <p><code>instrument</code> is the first step of ConcoLLMic. 
+          It instruments the source code with <code>fprintf</code> at key execution points.
+          These printing statements are inserted to key syntactic points, 
+          and print a tuple of the form <code>([file_name], "enter"/"exit", function_name, id)</code> to <code>stderr</code>.
+          This structure allows ConcoLLMic to understand the structure of any source code. 
+          During exeuction, these <code>stderr</code> outputs can be used to reconstruct the dynamic execution path.</p>
+        <p><b>Usage.</b> The usage of <code>instrument</code> is as follows:</p>
+        <ul><code>--src_dir</code>: Required. The directory of the source code.</ul>
+        <ul><code>--out_dir</code>: Required. The directory of the instrumented code.</ul>
+        <ul><code>--instr_languages</code>: Required. Comma-separated list of languages to instrument (e.g. <code>python,java,c,cpp</code>). All other files in the source directory will be ignored.</ul>
+        <ul><code>--exclude_dirs</code>: Optional. Comma-separated list of directories to exclude from instrumentation (e.g. <code>deps,tests,examples</code>).</ul>
+        <ul><code>--parallel_num</code>: Optional. The number of parallel instrumentation. Default is <code>10</code>.</ul>
+        <ul><code>--chunk_size</code>: Optional. For large files, the code is instrumented in chunks. The chunk size is defined by this parameter. Default is <code>800</code>.</ul>
+        
+        <h3 id="concolic-testing" class="title is-5">Concolic Testing</h3>
+        <p><code>run</code> is the second step of ConcoLLMic. 
+          It runs the concolic execution agent with the (compiled) instrumented code.</p>
+        <p><b>Usage.</b> The usage of <code>run</code> is as follows:</p>
+        <ul><code>--project_dir</code>: Required. The directory of the instrumented project.</ul>
+        <ul><code>input</code>: one of the following is required
+          <ul><code>--execution</code>: The initial execution file, specified as either (1) file path relative to <code>project_dir</code> (NOT the working directory), or (2) absolute file path. See below for more details.</ul>
+          <ul><code>--resume_in</code>: The output directory of one previous concolic execution (if you want to resume from previous concolic execution).</ul></ul>
+        <ul><code>--out</code>: Required. The directory of the output, including the execution files, trace files, and summary files.</ul>
+        <ul><code>--rounds</code>: Optional. The number of rounds to run</ul>
+        <ul><code>--selection</code>: Optional. The selection method for test cases. Choose from <code>random</code>, <code>dfs</code>, <code>llm</code>. Default is <code>random</code>.</ul>
+        <ul><code>--timeout</code>: Optional. The timeout for each execution of the under-test-program. Default is <code>3</code> seconds.</ul>
+        <ul><code>--plateau_slot</code>: Optional. The plateau slot in minutes. The concolic execution will stop if the (internal) code coverage does not improve for this period of time. This field is ignored when <code>rounds</code> is specified.</ul>
+        <ul><code>--parallel_num</code>: Optional. The number of parallel testcase generation. Default is <code>5</code>.</ul>
+
+        <p><b>Test Harness.</b> The file specified by <code>--execution</code> is the initial execution harness, written in <code>python</code>. 
+          This is conceptually similar to the <i>initial seed</i> used in conventional concolic execution / fuzzing tools.
+          It should contain a function of form <code>execute_program(timeout: int) -> tuple[str, int]</code> that executes the program and returns the <code>stderr</code> and exit code.
+          The <code>timeout</code> is the timeout for the execution, in seconds.
+          The function should run the program under test by 
+          <ol>
+          <li>constructing an input (or environment),</li>
+          <li>passing it to the program (e.g., using <code>subprocess.run</code>), and </li>
+          <li>handling possible failures.</li>
+          </ol>
+        <p>
+          For concrete toy examples, see the <a href="https://github.com/ConcoLLMic/ConcoLLMic/tree/main/code_example/harness">code examples</a>.
+          For more realistic examples, see the harness for 
+            <a href="https://github.com/ConcoLLMic/ConcoLLMic/blob/main/experiments/c_c%2B%2B_programs/bc/seed_execs/bc.py">bc</a> (C),
+            <a href="https://github.com/ConcoLLMic/ConcoLLMic/blob/main/experiments/c_c%2B%2B_programs/woff2/seed_execs/run.py">woff2</a> (C++ with binary input), and
+            <a href="https://github.com/ConcoLLMic/ConcoLLMic/blob/main/experiments/multi-language/ultrajson/seed_execs/run.py">ultrajson</a> (Python and C),
+        </p>
+        
+        <h3 id="replay" class="title is-5">Replay</h3>
+        <p>After testing, you can use <code>replay</code> to re-execute the generated test cases on the program under test -- possibly recompiled with coverage instrumentation or different sanitizers --
+          to collect coverage data, detect more bugs with sanitizers, or understand the test cases.</p>
+        <p><b>Usage.</b> The usage of <code>replay</code> is as follows:</p>
+        <ul><code>--out_dir</code>: Required. The output directory that contains the test cases for replay</ul>
+        <ul><code>--project_dir</code>: Required. The directory of the project with coverage instrumentation</ul>
+        <ul><code>--output_file</code>: Required. The file to save coverage data</ul>
+        <ul><code>--cov_script</code>: Optional. See more details below.</ul>
+        <ul><code>--timeout</code>: Optional. The timeout for the under-test-program execution. Default is <code>3</code> seconds.</ul>
+
+        <p><b>Coverage Script.</b> The coverage script is a custom script that is invoked after running each test case. 
+          It offers a convenient way to collect (1) overall coverage data (including <code>l_per, l_abs, b_per, b_abs</code>) and (2) the number of times a specific line has been covered. 
+          The script should take three arguments: (i) relative file path, (ii) line number, and (iii) line content.
+          For concrete examples, see this <a href="https://github.com/ConcoLLMic/ConcoLLMic/blob/main/code_example/src/coverage.sh">script</a> which collects <code>gcov</code> coverage of the program under test.</p>
+
+        <h3 id="statistics" class="title is-5">Statistics</h3>
+        <p>After instrumentation or testing, you can use <code>instrument_data</code> and <code>run_data</code> to collect statistics. 
+          Reported statistics include the breakdown of test cases, and the time/cost expended.</p>
+        
+        <p><b>Usage.</b> The usage of <code>instrument_data</code> is as follows:</p>
+        <ul><code>directory</code>: Required. The directory to search for instrumentation data.</ul>
+        <ul><code>--extensions</code>: Optional. List of file extensions to search for.</ul>
+        <ul><code>--output</code>: Optional. Output CSV file path for saving instrumentation data.</ul>
+        
+        <p><b>Usage.</b> The usage of <code>run_data</code> is as follows:</p>
+        <ul><code>out_dir</code>: Required. The directory to search for cost statistics</ul>
+        <ul><code>--print-tokens</code>: Optional. Whether to print the tokens of the testcase. Default is <code>True</code>.</ul>
+        
+        <h2 id="model" class="title is-5">Models</h2>
+        <p>This section summarizes the models used by ConcoLLMic and how to configure them.</p>
+        <ul>
+          <li>By default, ConcoLLMic uses <code>claude-3-7-sonnet</code> (requires <code>ANTHROPIC_API_KEY</code>). See <a href="https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key">here</a> for how to set up an Anthropic API key.</li>
+          <li>By default, ConcoLLMic uses temperature 0.0 for instrumentation and 0.5 for all other agents. You may adjust the temperature by changing the constant <code>*_TEMPERATURE</code> in <code>app/agents/agent_*.py</code>.</li>
+          <li>To other models, ...</li>
+          <li>To use GPT, <code>OPENAI_API_KEY</code> has to be set. See <a href="https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key">here</a> for how to set up an OpenAI API key.</li>
+        </ul>
+
+        <h2 id="docker" class="title is-5">Docker</h2>
+        <p>A Dockerfile is available on <a href="https://github.com/ConcoLLMic/ConcoLLMic/blob/main/experiments/c_c%2B%2B_programs/concolic-common.Dockerfile">GitHub</a>.</p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This means you are free to borrow the <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
+            we just ask that you link back to this page in the footer.
+            Please remember to remove the analytics code included in the header of the website which
+            you do not want on your website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
+
+

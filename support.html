@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="ConcoLLMic: Agentic Concolic Execution - Support.">
+  <meta name="keywords" content="ConcoLLMic, Support, Help, Contact">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Support - ConcoLLMic</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/navbar.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<div id="navbar-container"></div>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h1 class="title is-3">Support</h1>
+    <div class="content has-text-justified">
+      <h2 class="title is-5">Troubleshooting</h2>
+      <div class="columns is-multiline">
+        <div class="column is-12">
+          <article class="message is-info">
+            <div class="message-header">
+              <p>Instrumented code fails to compile</p>
+            </div>
+            <div class="message-body">
+              This may indeed happen, for example, if the instrumentation introduces a logging statement before <code>super()</code> in Java (which has to be the first statement in the constructor).
+              You may have to make minor changes to the instrumented code to make it compile. 
+              Alternatively, you may revert to the source code for that specific file.</li>
+            </div>
+          </article>
+        </div>
+        <div class="column is-12">
+          <article class="message is-warning">
+            <div class="message-header">
+              <p>Runtime error from LLM API calls</p>
+            </div>
+            <div class="message-body">
+              First, ensure that the API key is set correctly (see the <a href="docs.html#model">Model</a> section).
+              If the error persists, you may check the error message from the LLM.
+              If you have triggered a <b>rate limit</b>, you may retry with a lower <code>--parallel_num</code>.
+              If you have exceeded the <b>context window</b>, you may use a lower <code>--chunk_size</code> for instrumentation.
+              For concolic testing, you may drop instrumentation for non-critical files, or switch to a <a href="https://docs.claude.com/en/docs/about-claude/models/overview">different model</a> (e.g. Claude-4.0 with 1M tokens).
+            </div>
+          </article>
+        </div>
+      </div>
+      
+      <h2 class="title is-5">FAQ</h2>
+      <div class="columns is-multiline">
+        <div class="column is-12">
+          <article class="message">
+            <div class="message-header">
+              <p>Which platforms and languages are supported?</p>
+            </div>
+            <div class="message-body">
+              ConcoLLMic has been primarily tested on Linux (or WSL) and macOS. 
+              In theory, any language and their combinations should be supported.
+              In practice, we have tested ConcoLLMic on C, C++, Python, Java, and Go.
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <h2 class="title is-5">Bug Report</h2>
+      <p>
+        Still need help with ConcoLLMic? 
+        You are welcome to raise an issue on <a href="https://github.com/ConcoLLMic/ConcoLLMic/issues">GitHub</a> with a detailed bug report.
+      </p>
+
+      <h2 class="title is-5">License</h2>
+      <p>
+        The source code of ConcoLLMic is dual licensed. 
+        It admits free use under the <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3 license</a> for non-commercial use (which include academic and educational purposes).
+        For commercial use, please contact us for a commercial license. 
+        For more details, please see the <a href="https://github.com/ConcoLLMic/ConcoLLMic/blob/main/LICENSE">LICENSE</a> file.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This means you are free to borrow the <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
+            we just ask that you link back to this page in the footer.
+            Please remember to remove the analytics code included in the header of the website which
+            you do not want on your website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
+
+

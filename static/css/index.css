@@ -1,3 +1,7 @@
+/* Ensure navbar is not fixed on docs page across all widths */
+body.docs-page .navbar {
+  position: static !important;
+}
 body {
   font-family: 'Noto Sans', sans-serif;
 }
@@ -154,4 +158,104 @@ body {
 }
 #interpolation-image-wrapper img {
   border-radius: 5px;
+}
+
+/* Sticky sidebar for docs */
+.docs-columns {
+  align-items: flex-start;
+  position: relative;
+  overflow: visible;
+}
+
+.docs-sidebar {
+  position: sticky;
+  top: 1.5rem;
+  height: max-content;
+  z-index: 2;
+}
+
+.docs-sidebar .menu {
+  position: sticky;
+  top: 1.5rem;
+}
+
+/* Emoji list styling */
+.emoji-list {
+  list-style: none;
+  padding-left: 0;
+}
+.emoji-list li {
+  margin-bottom: 0.4rem;
+}
+
+/* Responsive navbar → off-canvas sidebar on mobile */
+@media (max-width: 1023px) {
+  /* Disable sticky docs sidebar on mobile to prevent overlap */
+  .docs-sidebar {
+    position: static;
+    top: auto;
+    z-index: 1;
+    margin-bottom: 1rem;
+  }
+  .docs-sidebar .menu {
+    position: static;
+    top: auto;
+  }
+
+  /* On docs page, let navbar be in normal flow to avoid overlap */
+  body.docs-page .navbar {
+    position: static;
+    display: block;
+    width: 100%;
+    z-index: 3;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+  }
+
+  body.docs-page {
+    padding-top: 0;
+  }
+
+  /* Off-canvas drawer from top of viewport */
+  body.docs-page .navbar-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    background: #fff;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    display: block !important;
+    overflow-y: auto;
+    z-index: 40;
+  }
+
+  body.docs-page .navbar-menu.is-active {
+    transform: translateX(0);
+  }
+
+  body.docs-page .navbar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 35;
+  }
+
+  body.docs-page .navbar-overlay.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.docs-page.navbar-sidebar-open {
+    overflow: hidden;
+    touch-action: none;
+  }
 }
