@@ -21,6 +21,14 @@ body {
   font-variant: small-caps;
 }
 
+.concollmic {
+  /* font-variant-caps: small-caps;
+  font-feature-settings: "smcp" 1;
+  font-size: 1.08em;
+  letter-spacing: 0.7px;
+  font-weight: 600; */
+}
+
 
 .teaser .hero-body {
   padding-top: 0;
